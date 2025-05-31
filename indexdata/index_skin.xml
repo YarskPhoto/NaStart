@@ -529,7 +529,9 @@ tween(alpha, 1);
 		mul(totalThumbsSpacer_controlBar_dockedThumbnails, get(layer[scrollAreaContainer_controlBar_dockedThumbnails].currentThumbsCount), get(layer[scrollAreaContainer_controlBar_dockedThumbnails].thumbSpacer));
 		sub(totalThumbsSpacer_controlBar_dockedThumbnails, get(layer[scrollAreaContainer_controlBar_dockedThumbnails].thumbSpacer));
 		
-		set(layer[get(layer[scrollAreaContainer_controlBar_dockedThumbnails].parent)].visible, true);
+		if(tour_displaycontrols,
+			set(layer[get(layer[scrollAreaContainer_controlBar_dockedThumbnails].parent)].visible, true);
+		);
 		
 
 			mul(scrollAreaSize_controlBar_dockedThumbnails, get(layer[scrollAreaContainer_controlBar_dockedThumbnails].itemWidth), get(layer[scrollAreaContainer_controlBar_dockedThumbnails].currentThumbsCount));
@@ -1114,7 +1116,7 @@ tween(alpha, 1);
 
 <action name="controlBar_dockedThumbnailsCallOnStartTour">
 	
-	showTourControls();
+	hideTourControls();
 
 </action>
 
