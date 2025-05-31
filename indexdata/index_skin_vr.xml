@@ -6,17 +6,24 @@
 
 
   <style name="IconDefaultPointSpotStyle"
-         url="%FIRSTXML%/spots/hotspot_image_user_defaultpoint0.png"
+         url="%FIRSTXML%/spots/hotspot_direction_sequence_user_defaultpoint0.png"
          visible="false"
-         edge="bottom" ox="0" oy="0"
+         frame="0"
+         lastframe="18"
+         framewidth="50"
+         frameheight="50"
+         stopspotsequence="false"
+         crop="0|0|50|50"
+         edge="center"
          rotate="270"
          alpha="0.8"
+         onloaded="startspotanimation(0.1);"
          onhover="onhoverIconDefaultPointSpotStyle"
          onover="onoverIconDefaultPointSpotStyle"
          onout="onoutIconDefaultPointSpotStyle"
 
-         height="50"
-         width="50"
+         height="40"
+         width="40"
          />
   <action name="onhoverIconDefaultPointSpotStyle">
     showtooltip('hotspot');
@@ -175,11 +182,6 @@ tween(alpha, 1);
 	set(fov_moveforce, 0);
 </action>
 
-  <!-- Hide / Show Controls -->
-  <action name="hideTourControls">set(tour_displaycontrols, false);events.dispatch(hidetourcontrols);</action>
-  <action name="showTourControls">set(tour_displaycontrols, true); events.dispatch(showtourcontrols);</action>
-
-
   <!-- Fullscreen Management -->
   <action name="exitFullScreen" devices="fullscreensupport">set(tour_fullscreen,false);set(fullscreen,false);</action>
   <action name="enterFullScreen" devices="fullscreensupport">set(tour_fullscreen,true);set(fullscreen,true);</action>
@@ -191,5 +193,10 @@ tween(alpha, 1);
     keep="true" />
 
   <action name="exitFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,false);events.dispatch(onexitfullscreen);</action>
+
+  <!-- Hide / Show Controls -->
+  <action name="hideTourControls">set(tour_displaycontrols, false);events.dispatch(hidetourcontrols);</action>
+  <action name="showTourControls">set(tour_displaycontrols, true); events.dispatch(showtourcontrols);</action>
+
 
 </krpano>
