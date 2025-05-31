@@ -35,8 +35,6 @@
 
 
 
-  <data name="ru_controlBar_dockedThumbnailsprevSceneTip"><![CDATA[Previous panorama]]></data>
-  <data name="ru_controlBar_dockedThumbnailsnextSceneTip"><![CDATA[Next panorama]]></data>
   <data name="ru_controlBar_dockedThumbnailszoomInTip"><![CDATA[Zoom in]]></data>
   <data name="ru_controlBar_dockedThumbnailszoomOutTip"><![CDATA[Zoom out]]></data>
   <data name="ru_controlBar_dockedThumbnailsmoveLeftTip"><![CDATA[Move left]]></data>
@@ -47,8 +45,6 @@
   <data name="ru_controlBar_dockedThumbnailscloseFsTip"><![CDATA[Exit fullscreen]]></data>
   <data name="ru_controlBar_dockedThumbnailsautorotateOnTip"><![CDATA[Start autorotation]]></data>
   <data name="ru_controlBar_dockedThumbnailsautorotateOffTip"><![CDATA[Stop autorotation]]></data>
-  <data name="ru_controlBar_dockedThumbnailsdisplayHelpTip"><![CDATA[Show help screen]]></data>
-  <data name="ru_controlBar_dockedThumbnailshideHelpTip"><![CDATA[Hide help screen]]></data>
   <data name="ru_controlBar_dockedThumbnailsdisplayControlsTip"><![CDATA[Show controls]]></data>
   <data name="ru_controlBar_dockedThumbnailshideControlsTip"><![CDATA[Hide controls]]></data>
   <data name="ru_controlBar_dockedThumbnailsctrlmodeDragTip"><![CDATA[Change control mode]]></data>

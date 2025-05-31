@@ -48,11 +48,27 @@ tween(alpha, 1);
 <events name="controlBar_dockedThumbnailsbarevents" 
 	onxmlcomplete="controlBar_dockedThumbnailsbuildMenuBar();"
 
+	openvideointerface="controlBar_dockedThumbnailsHideControlBar();"
+	closevideointerface="controlBar_dockedThumbnailsShowControlBar();"
 
 	onresize="controlBar_dockedThumbnailsOnResize();"
 	keep="true"/>
 
 
+<action name="controlBar_dockedThumbnailsHideControlBar">
+	if(controlBar_dockedThumbnailsIsOpened,
+		set(layer[controlBar_dockedThumbnails_bg].visible, false);
+	,
+		set(layer[controlBar_dockedThumbnailsbtn_showcontrols].visible, false);
+	);
+</action>
+<action name="controlBar_dockedThumbnailsShowControlBar">
+	if(controlBar_dockedThumbnailsIsOpened,
+		set(layer[controlBar_dockedThumbnails_bg].visible, true);
+	,
+		set(layer[controlBar_dockedThumbnailsbtn_showcontrols].visible, true);
+	);
+</action>
 
 <action name="controlBar_dockedThumbnailsbuildMenuBar">
 	ifnot (controlBar_dockedThumbnailsbarbuilt, controlBar_dockedThumbnailsbuildMenu(); set(controlBar_dockedThumbnailsbarbuilt, true););
@@ -129,6 +145,8 @@ tween(alpha, 1);
 		onTourStart="set(isStarted_controlBar_dockedThumbnails, true);if(isLoaded_controlBar_dockedThumbnails,onLoadCompleteHandler_controlBar_dockedThumbnails(););"
 		onnewpano="if(startResize_controlBar_dockedThumbnails,if(firstInit_controlBar_dockedThumbnails,onLoadCompleteHandler_controlBar_dockedThumbnails();););"
 		onresize="onResizeHandler_controlBar_dockedThumbnails();"
+		hidetourcontrols="hideWithControlsBar_controlBar_dockedThumbnails();" 
+		showtourcontrols="showWithControlsBar_controlBar_dockedThumbnails();" 
 		onenterfullscreen="delayedcall(0.2,scrollToCurrentThumb_controlBar_dockedThumbnails(););"
 		onexitfullscreen="delayedcall(0.2,scrollToCurrentThumb_controlBar_dockedThumbnails(););"	
 	/>
@@ -318,6 +336,15 @@ tween(alpha, 1);
 	
 	
 	
+		<action name="showWithControlsBar_controlBar_dockedThumbnails">
+			
+				set(layer[thumbnailsBar_controlBar_dockedThumbnails].visible, true);
+				onResizeCallback_controlBar_dockedThumbnails(true);
+		</action>
+		
+		<action name="hideWithControlsBar_controlBar_dockedThumbnails">
+			set(layer[thumbnailsBar_controlBar_dockedThumbnails].visible, false);
+		</action>
 	
 	
 	<action name="thumbnailBorderDrawInit_controlBar_dockedThumbnails">
@@ -451,7 +478,11 @@ tween(alpha, 1);
 			set(layer[scrollAreaContainer_controlBar_dockedThumbnails].visible, true);
 			
 			
-					set(layer[thumbnailsBar_controlBar_dockedThumbnails].visible, true);
+				if (tour_displaycontrols,
+					showWithControlsBar_controlBar_dockedThumbnails();
+				,
+					hideWithControlsBar_controlBar_dockedThumbnails();
+				);
 			
 			
 			set(layer[scrollAreaContainer_controlBar_dockedThumbnails].ready, true);
@@ -527,7 +558,9 @@ tween(alpha, 1);
 		if(layer[get(layer[scrollAreaContainer_controlBar_dockedThumbnails].parent)].visible,
 			set(boolValue_controlBar_dockedThumbnails, false);
 			
+				if (tour_displaycontrols,
 					set(boolValue_controlBar_dockedThumbnails, true);
+				);
 			
 			set(layer[get(layer[scrollAreaContainer_controlBar_dockedThumbnails].parent)].visible, get(boolValue_controlBar_dockedThumbnails));
 		);
@@ -1008,14 +1041,6 @@ tween(alpha, 1);
     inc(controlBar_dockedThumbnailsbutton_pos, 36);
 
 
-      if (device.desktop,
-        set(layer[controlBar_dockedThumbnailsbtn_display_help].x, get(controlBar_dockedThumbnailsbutton_pos));
-        set(layer[controlBar_dockedThumbnailsbtn_display_help_bg].x, get(controlBar_dockedThumbnailsbutton_pos));
-        set(layer[controlBar_dockedThumbnailsbtn_close_help].x  , get(controlBar_dockedThumbnailsbutton_pos));
-        set(layer[controlBar_dockedThumbnailsbtn_close_help_bg].x  , get(controlBar_dockedThumbnailsbutton_pos));
-        inc(controlBar_dockedThumbnailsbutton_pos, 36);
-      );
-
       if (device.fullscreensupport,
         set(layer[controlBar_dockedThumbnailsbtn_openfs].x, get(controlBar_dockedThumbnailsbutton_pos));
         set(layer[controlBar_dockedThumbnailsbtn_closefs].x, get(controlBar_dockedThumbnailsbutton_pos));
@@ -1076,16 +1101,6 @@ tween(alpha, 1);
       );
 
 
-      if (scene.count GT 1,
-        set(layer[controlBar_dockedThumbnailsbtn_next_pano].x, get(controlBar_dockedThumbnailsbutton_pos));
-        set(layer[controlBar_dockedThumbnailsbtn_next_pano_bg].x, get(controlBar_dockedThumbnailsbutton_pos));
-        inc(controlBar_dockedThumbnailsbutton_pos, 36);
-
-        set(layer[controlBar_dockedThumbnailsbtn_prev_pano].x, get(controlBar_dockedThumbnailsbutton_pos));
-        set(layer[controlBar_dockedThumbnailsbtn_prev_pano_bg].x, get(controlBar_dockedThumbnailsbutton_pos));
-        inc(controlBar_dockedThumbnailsbutton_pos, 36);
-      );
-
 
 
       set(controlBar_dockedThumbnailsThumbnailsPos, get(controlBar_dockedThumbnailsbutton_pos));
@@ -1099,7 +1114,8 @@ tween(alpha, 1);
 
 <action name="controlBar_dockedThumbnailsCallOnStartTour">
 	
-	controlBar_dockedThumbnailsshowMenuControls();
+	showTourControls();
+
 </action>
 
 
@@ -1283,7 +1299,7 @@ tween(alpha, 1);
 	</action>
 	<action name="controlBar_dockedThumbnailsupdateControlModeButtons">
 	if (device.desktop,
-		if (controlBar_dockedThumbnailsIsOpened,
+		if (tour_displaycontrols,
 			controlBar_dockedThumbnailsShowControlModeButtons();
 		,
 			controlBar_dockedThumbnailsHideControlModeButtons();
@@ -1392,25 +1408,6 @@ tween(alpha, 1);
 
 
 
-    <layer name="controlBar_dockedThumbnailsbtn_prev_pano_bg" style="controlBar_dockedThumbnails_btn_style_bg" visible="false" />
-    <layer name="controlBar_dockedThumbnailsbtn_prev_pano"
-           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_previous_scene.png"
-           onclick="loadPreviousScene();
-"
-           style="controlBar_dockedThumbnails_btn_style"
-           tooltip="controlBar_dockedThumbnailsprevSceneTip"
-           visible="false"
-           />
-    <layer name="controlBar_dockedThumbnailsbtn_next_pano_bg" style="controlBar_dockedThumbnails_btn_style_bg" visible="false" />
-    <layer name="controlBar_dockedThumbnailsbtn_next_pano"
-           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_next_scene.png"
-           onclick="loadNextScene();
-"
-           style="controlBar_dockedThumbnails_btn_style"
-            tooltip="controlBar_dockedThumbnailsnextSceneTip"
-           visible="false"
-           />
-
 
 
 
@@ -1457,32 +1454,13 @@ tween(alpha, 1);
 
 
 
-    <layer name="controlBar_dockedThumbnailsbtn_display_help_bg" style="controlBar_dockedThumbnails_btn_style_bg" visible="false" devices="desktop" />
-    <layer name="controlBar_dockedThumbnailsbtn_display_help"
-           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_help.png"
-           onclick="controlBar_dockedThumbnailsdisplayHelp();"
-           style="controlBar_dockedThumbnails_btn_style"
-           tooltip="controlBar_dockedThumbnailsdisplayHelpTip"
-           devices="desktop"
-           visible="false"
-           />
-    <layer name="controlBar_dockedThumbnailsbtn_close_help_bg" style="controlBar_dockedThumbnails_btn_style_on_bg" visible="false" devices="desktop"/>
-    <layer name="controlBar_dockedThumbnailsbtn_close_help"
-           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_help.png"
-           onclick="controlBar_dockedThumbnailscloseHelp();"
-           style="controlBar_dockedThumbnails_btn_style_on"
-           visible="false"
-           tooltip="controlBar_dockedThumbnailshideHelpTip"
-           devices="desktop"
-           />
-
 
 
     <layer name="controlBar_dockedThumbnailsbtn_hidecontrols_bg" style="controlBar_dockedThumbnails_btn_style_bg" visible="false" />
     <layer name="controlBar_dockedThumbnailsbtn_hidecontrols"
            url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_hide_controls.png"
            style="controlBar_dockedThumbnails_btn_style"
-           onclick="controlBar_dockedThumbnailshideMenuControls();hideTourControls();
+           onclick="hideTourControls();
 "
            visible="false"
             tooltip="controlBar_dockedThumbnailshideControlsTip"
@@ -1505,7 +1483,7 @@ tween(alpha, 1);
                   crop="0| 0|48|48"
             onovercrop="0|48|48|48"
             ondowncrop="0|96|48|48"
-            onclick="controlBar_dockedThumbnailsshowMenuControls();showTourControls();
+            onclick="showTourControls();
 "
             onhover="showTooltip('plugin',controlBar_dockedThumbnailsmenuTooltipStyle);"
             onout="hideTooltip();"
@@ -1518,6 +1496,11 @@ tween(alpha, 1);
             />
     </layer>
 
+<events name="controlBar_dockedThumbnailshideshowcontrolsevent"
+	hidetourcontrols="controlBar_dockedThumbnailshideMenuControls();"
+	showtourcontrols="controlBar_dockedThumbnailsshowMenuControls();"
+	keep="true"/>
+	
 
 <action name="controlBar_dockedThumbnailshideMenuControls">
 	set(controlBar_dockedThumbnailsIsOpened, false);
@@ -1537,18 +1520,11 @@ tween(alpha, 1);
 	set(layer[controlBar_dockedThumbnailsbtn_up_bg].visible, false);
 	set(layer[controlBar_dockedThumbnailsbtn_down].visible, false);
 	set(layer[controlBar_dockedThumbnailsbtn_up].visible, false);
-	if (scene.count GT 1,
-	set(layer[controlBar_dockedThumbnailsbtn_prev_pano_bg].visible, false);
-	set(layer[controlBar_dockedThumbnailsbtn_next_pano_bg].visible, false);
-	set(layer[controlBar_dockedThumbnailsbtn_prev_pano].visible, false);
-	set(layer[controlBar_dockedThumbnailsbtn_next_pano].visible, false);
-	);
 		controlBar_dockedThumbnailsupdateAutorotationButtons();
 
 
 		controlBar_dockedThumbnailsupdateControlModeButtons();
 		controlBar_dockedThumbnailsupdateFullscreenButtons();
-		controlBar_dockedThumbnailsupdateHelpButtons();
 </action>
 <action name="controlBar_dockedThumbnailsshowMenuControls">
 	set(controlBar_dockedThumbnailsIsOpened, true);
@@ -1557,7 +1533,6 @@ tween(alpha, 1);
 
 
       controlBar_dockedThumbnailsupdateControlModeButtons();
-      controlBar_dockedThumbnailsupdateHelpButtons();
       set(layer[controlBar_dockedThumbnails_bg].visible, true);
 	set(layer[controlBar_dockedThumbnailsbtn_showcontrols].visible, false);
 	set(layer[controlBar_dockedThumbnailsbtn_hidecontrols_bg].visible, true);
@@ -1574,75 +1549,11 @@ tween(alpha, 1);
 	set(layer[controlBar_dockedThumbnailsbtn_up_bg].visible, true);
 	set(layer[controlBar_dockedThumbnailsbtn_down].visible, true);
 	set(layer[controlBar_dockedThumbnailsbtn_up].visible, true);
-	if (scene.count GT 1,
-	set(layer[controlBar_dockedThumbnailsbtn_prev_pano_bg].visible, true);
-	set(layer[controlBar_dockedThumbnailsbtn_next_pano_bg].visible, true);
-	set(layer[controlBar_dockedThumbnailsbtn_prev_pano].visible, true);
-	set(layer[controlBar_dockedThumbnailsbtn_next_pano].visible, true);
-	);
 	
 	
 		controlBar_dockedThumbnailsUpdateThumbnailsSize();
 </action>
 
-
-    <layer name="controlBar_dockedThumbnailshelpScreenBg" align="center" keep="true" onclick="controlBar_dockedThumbnailscloseHelp();"
-           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/help_screen_bg.png"
-           visible="false"
-           zorder="97"
-           >
-      <layer name="controlBar_dockedThumbnailshelpScreen" align="center" keep="true" onclick="controlBar_dockedThumbnailscloseHelp();" 
-             url="%FIRSTXML%/graphics/dockedthumbscontrolbar/help_screen_fg.png"
-             height="100%" 
-             width="prop" 
-             displayed="false"
-             />
-    </layer>
-    <action name="controlBar_dockedThumbnailsdisplayHelp">
-      if (device.desktop,
-        set(layer[controlBar_dockedThumbnailshelpScreen].displayed, true);
-        set(layer[controlBar_dockedThumbnailshelpScreenBg].visible,true);
-        controlBar_dockedThumbnailsupdateHelpButtons();
-      );
-    </action>
-    <action name="controlBar_dockedThumbnailscloseHelp">
-      if (device.desktop,
-        set(layer[controlBar_dockedThumbnailshelpScreen].displayed, false);
-        set(layer[controlBar_dockedThumbnailshelpScreenBg].visible,false);
-        controlBar_dockedThumbnailsupdateHelpButtons();
-      );
-    </action>
-	<action name="controlBar_dockedThumbnailsHideHelpButtons">
-		set(layer[controlBar_dockedThumbnailsbtn_display_help].visible, false);
-		set(layer[controlBar_dockedThumbnailsbtn_close_help].visible, false);
-		set(layer[controlBar_dockedThumbnailsbtn_display_help_bg].visible, false);
-		set(layer[controlBar_dockedThumbnailsbtn_close_help_bg].visible, false);
-	</action>
-	<action name="controlBar_dockedThumbnailsShowHelpButtons">
-		if (layer[controlBar_dockedThumbnailshelpScreen].displayed,
-			set(layer[controlBar_dockedThumbnailsbtn_close_help].visible, true);
-			set(layer[controlBar_dockedThumbnailsbtn_display_help].visible, false);
-			set(layer[controlBar_dockedThumbnailsbtn_close_help_bg].visible, true);
-			set(layer[controlBar_dockedThumbnailsbtn_display_help_bg].visible, false);
-		,
-			set(layer[controlBar_dockedThumbnailsbtn_display_help].visible, true);
-			set(layer[controlBar_dockedThumbnailsbtn_close_help].visible, false);
-			set(layer[controlBar_dockedThumbnailsbtn_display_help_bg].visible, true);
-			set(layer[controlBar_dockedThumbnailsbtn_close_help_bg].visible, false);
-		);
-	</action>
-	<action name="controlBar_dockedThumbnailsupdateHelpButtons">
-	if (device.desktop,
-		if (controlBar_dockedThumbnailsIsOpened,
-			controlBar_dockedThumbnailsShowHelpButtons();
-		,
-			controlBar_dockedThumbnailsHideHelpButtons();
-		);
-	,
-		controlBar_dockedThumbnailsHideHelpButtons();
-	);
-	</action>
-    
 
 
 	<events name="controlBar_dockedThumbnailsmenufullscreenchangeevent"
@@ -1673,7 +1584,7 @@ tween(alpha, 1);
 		);
 	</action>
 	<action name="controlBar_dockedThumbnailsupdateFullscreenButtons">
-		if (controlBar_dockedThumbnailsIsOpened,
+		if (tour_displaycontrols,
 			controlBar_dockedThumbnailsShowFullscreenButtons();
 		,
 			controlBar_dockedThumbnailsHideFullscreenButtons();
@@ -1706,7 +1617,7 @@ tween(alpha, 1);
 		);
 	</action>
 	<action name="controlBar_dockedThumbnailsupdateAutorotationButtons">
-		if (controlBar_dockedThumbnailsIsOpened,
+		if (tour_displaycontrols,
 			controlBar_dockedThumbnailsShowAutorotationButtons();
 		,
 			controlBar_dockedThumbnailsHideAutorotationButtons();
@@ -1722,10 +1633,10 @@ tween(alpha, 1);
 	type="text"
 	align="center"
 	bg="true"
-	bgcolor="0x92d26a"
+	bgcolor="0x0b1008"
 	bgalpha="0.80000000000000004"
 	bgborder="0"
-	css="color:#f29320;font-family:Times New Roman;font-weight:bold;font-size:14px;text-align:left;"
+	css="color:#f2f2f2;font-family:Times New Roman;font-weight:bold;font-size:14px;text-align:left;"
 	edge="bottom"
 	interactivecontent="false"
 	zorder="0"
